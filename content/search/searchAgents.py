@@ -47,6 +47,7 @@ from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
 from game import Actions
+import itertools
 import util
 import time
 import search
@@ -372,7 +373,14 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     remaining = [corner for corner, seen in zip(corners, visited) if not seen]
     if not remaining:
         return 0
-    return max(util.manhattanDistance(position, corner) for corner in remaining)
+    best = float('inf')
+    for order in itertools.permutations(remaining):
+        total, current = 0, position
+        for corner in order:
+            total += util.manhattanDistance(current, corner)
+            current = corner
+        best = min(best, total)
+    return best
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
