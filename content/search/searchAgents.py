@@ -26,16 +26,7 @@ description.
 Please only change the parts of the file you are asked to.  Look for the lines
 that say
 
-(x, y), visited = state
-dx, dy = Actions.directionToVector(action)
-nextx, nexty = int(x + dx), int(y + dy)
-if not self.walls[nextx][nexty]:
-    nextPosition = (nextx, nexty)
-    nextVisited = tuple(
-        seen or nextPosition == corner
-        for seen, corner in zip(visited, self.corners)
-    )
-    successors.append(((nextPosition, nextVisited), action, 1))
+"*** YOUR CODE HERE ***"
 
 The parts you fill in start about 3/4 of the way down.  Follow the project
 description for details.
@@ -334,7 +325,16 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
 
-            "*** YOUR CODE HERE ***"
+            (x, y), visited = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                nextPosition = (nextx, nexty)
+                nextVisited = tuple(
+                    seen or nextPosition == corner
+                    for seen, corner in zip(visited, self.corners)
+                )
+                successors.append(((nextPosition, nextVisited), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
