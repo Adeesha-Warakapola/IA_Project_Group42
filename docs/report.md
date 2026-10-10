@@ -95,13 +95,15 @@ def foodHeuristic(state, problem: FoodSearchProblem):
 - **Result**: **4,137 nodes expanded** on `trickySearch` (Full credit 5/4, 8/8 marks equivalent).
 
 #### Concise Explanation (155 words — Max 200 Words Rule)
-In `searchAgents.py`, `foodHeuristic` evaluates remaining search effort to clear all food dots by taking the maximum true maze distance from Pac-Man's current position to any remaining food dot.
+In `searchAgents.py`, `foodHeuristic` estimates how many steps Pac-Man needs to collect all remaining food dots. It does this by finding the food dot that is furthest away using actual maze distance.
 
-**Logic & Design**: The heuristic calculates BFS-based maze distances (`mazeDistance`), which account for walls and maze topology. Compared to straight-line Manhattan distance, true maze distance provides a substantially tighter lower bound on the actual path length required to reach the farthest food.
+**Logic & Design**: Instead of measuring straight lines (Manhattan distance), we use `mazeDistance` (which uses BFS) to count real steps around walls. Because Pac-Man must reach every food dot, the distance to the farthest food gives a very accurate lower estimate of the remaining path length.
 
-**Admissibility & Consistency**: Because Pac-Man must visit all remaining food items, the total path cost to clear all food cannot be less than the maze distance to the farthest single dot. Thus, $h(s) \le h^*(s)$ (admissible). By triangle inequality on step costs, single-step moves change maze distance by at most 1, satisfying $h(s) \le c(s,s') + h(s')$ (consistent).
+**Admissibility & Consistency**:
+- *Admissible*: Pac-Man has to collect all food, so he must reach the farthest dot. The true cost to finish cannot be smaller than the maze distance to that dot ($h(s) \le h^*(s)$).
+- *Consistent*: Moving 1 step decreases the distance to any dot by at most 1 step, so the heuristic never overestimates progress ($h(s) \le 1 + h(s')$).
 
-**Data Structure & Memoization**: Computed `(position, food)` maze distances are cached in `problem.heuristicInfo`. Storing results in this shared dictionary eliminates redundant BFS searches across state expansions, reducing amortized lookup time to $O(1)$.
+**Data Structure & Speed**: To keep search fast, distances for each `(position, food)` pair are saved in a dictionary called `problem.heuristicInfo`. Once computed, distances are reused instantly ($O(1)$ lookup), avoiding repeated BFS calculations.
 
 ---
 
