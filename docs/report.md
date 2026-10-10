@@ -69,13 +69,38 @@ Full autograder run screenshot: `docs/screenshots/full-run.png`
 - **Heuristic**: Shortest Manhattan-distance tour through all unvisited corners.
 - **Explanation**: Computes minimum permutation distance to visit remaining corners. Expanded nodes on `mediumCorners`: 741 nodes.
 
-### Q7: Food Search Problem (Food Heuristic)
-- **File**: `content/search/searchAgents.py`
-- **Heuristic Evolution**:
-  1. *Remaining Food Count*: 12,517 nodes expanded.
-  2. *Manhattan Distance to Farthest Food*: 9,551 nodes expanded.
-  3. *Cached Maze Distance (BFS) to Farthest Food*: **4,137 nodes expanded** (Optimal).
-- **Explanation**: True maze distance via BFS provides a tight, admissible bound. Distances between Pac-Man position and food dots are dynamically cached in `problem.heuristicInfo`.
+### 2.7 Question 7: Eating All The Dots — Food Heuristic
+
+#### Code Snippet (`searchAgents.py`)
+```python
+def foodHeuristic(state, problem: FoodSearchProblem):
+    position, foodGrid = state
+    foodList = foodGrid.asList()
+    if not foodList:
+        return 0
+
+    distances = problem.heuristicInfo
+    farthest = 0
+    for food in foodList:
+        key = (position, food)
+        if key not in distances:
+            distances[key] = mazeDistance(position, food, problem.startingGameState)
+        farthest = max(farthest, distances[key])
+    return farthest
+```
+
+#### Autograder Output Screenshot
+![Autograder Output Q7](file:///d:/IA-Project%20%20Group%20-42/docs/screenshots/q7.png)
+- **Target Threshold**: $\le 9000$ nodes (3/4 credit), $\le 7000$ nodes (4/4 full credit).
+- **Achieved Node Expansion**: **4,137 nodes** on `trickySearch` (Full credit 5/4, 8/8 marks equivalent).
+
+#### Heuristic Design & Performance Explanation
+1. **Design Evolution**:
+   - *Remaining Food Count*: 12,517 nodes (Admissible baseline).
+   - *Manhattan Distance to Farthest Food*: 9,551 nodes (Straight-line lower bound).
+   - *Cached BFS Maze Distance*: **4,137 nodes** (Tight wall-aware lower bound).
+2. **Admissibility & Consistency**: Actual path length to clear all dots cannot be less than the true maze distance to the furthest food dot $f^*$. Triangle inequality guarantees consistency step-by-step.
+3. **Memoization Efficiency**: `problem.heuristicInfo` caches BFS results for `(position, food)` pairs, providing $O(1)$ lookup performance after initial computation.
 
 ---
 
