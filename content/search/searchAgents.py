@@ -479,10 +479,13 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     if not foodList:
         return 0
 
+    # Retrieve shared cache dictionary for maze distances
     distances = problem.heuristicInfo
     farthest = 0
+    # Iterate through all uncollected food coordinates
     for food in foodList:
         key = (position, food)
+        # Compute BFS maze distance only if not present in lookup cache
         if key not in distances:
             distances[key] = mazeDistance(position, food, problem.startingGameState)
         farthest = max(farthest, distances[key])
