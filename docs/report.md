@@ -69,7 +69,7 @@ Full autograder run screenshot: `docs/screenshots/full-run.png`
 - **Heuristic**: Shortest Manhattan-distance tour through all unvisited corners.
 - **Explanation**: Computes minimum permutation distance to visit remaining corners. Expanded nodes on `mediumCorners`: 741 nodes.
 
-### 2.7 Question 7: Eating All The Dots — Food Heuristic
+### Q7 — Eating All The Dots: Food Heuristic (8 Marks)
 
 #### Code Snippet (`searchAgents.py`)
 ```python
@@ -89,18 +89,19 @@ def foodHeuristic(state, problem: FoodSearchProblem):
     return farthest
 ```
 
-#### Autograder Output Screenshot
+#### Autograder Verification Screenshot
 ![Autograder Output Q7](file:///d:/IA-Project%20%20Group%20-42/docs/screenshots/q7.png)
-- **Target Threshold**: $\le 9000$ nodes (3/4 credit), $\le 7000$ nodes (4/4 full credit).
-- **Achieved Node Expansion**: **4,137 nodes** on `trickySearch` (Full credit 5/4, 8/8 marks equivalent).
+- **Grade Threshold**: $\le 9,000$ nodes for max score 8/8.
+- **Result**: **4,137 nodes expanded** on `trickySearch` (Full credit 5/4, 8/8 marks equivalent).
 
-#### Heuristic Design & Performance Explanation
-1. **Design Evolution**:
-   - *Remaining Food Count*: 12,517 nodes (Admissible baseline).
-   - *Manhattan Distance to Farthest Food*: 9,551 nodes (Straight-line lower bound).
-   - *Cached BFS Maze Distance*: **4,137 nodes** (Tight wall-aware lower bound).
-2. **Admissibility & Consistency**: Actual path length to clear all dots cannot be less than the true maze distance to the furthest food dot $f^*$. Triangle inequality guarantees consistency step-by-step.
-3. **Memoization Efficiency**: `problem.heuristicInfo` caches BFS results for `(position, food)` pairs, providing $O(1)$ lookup performance after initial computation.
+#### Concise Explanation (155 words — Max 200 Words Rule)
+In `searchAgents.py`, `foodHeuristic` evaluates remaining search effort to clear all food dots by taking the maximum true maze distance from Pac-Man's current position to any remaining food dot.
+
+**Logic & Design**: The heuristic calculates BFS-based maze distances (`mazeDistance`), which account for walls and maze topology. Compared to straight-line Manhattan distance, true maze distance provides a substantially tighter lower bound on the actual path length required to reach the farthest food.
+
+**Admissibility & Consistency**: Because Pac-Man must visit all remaining food items, the total path cost to clear all food cannot be less than the maze distance to the farthest single dot. Thus, $h(s) \le h^*(s)$ (admissible). By triangle inequality on step costs, single-step moves change maze distance by at most 1, satisfying $h(s) \le c(s,s') + h(s')$ (consistent).
+
+**Data Structure & Memoization**: Computed `(position, food)` maze distances are cached in `problem.heuristicInfo`. Storing results in this shared dictionary eliminates redundant BFS searches across state expansions, reducing amortized lookup time to $O(1)$.
 
 ---
 
