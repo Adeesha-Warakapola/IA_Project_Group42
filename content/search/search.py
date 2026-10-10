@@ -98,7 +98,8 @@ def depthFirstSearch(problem: SearchProblem):
             continue
         expanded.add(state)
         for successor, action, stepCost in problem.getSuccessors(state):
-            fringe.push((successor, actions + [action]))
+            if successor not in expanded:
+                fringe.push((successor, actions + [action]))
 
     return []
 
