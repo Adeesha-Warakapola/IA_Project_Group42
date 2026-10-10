@@ -475,6 +475,8 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     position, foodGrid = state
     # Pacman must at least reach the food that is farthest away by true maze
     # distance. Distances are BFS results, cached in problem.heuristicInfo.
+    # Admissibility is guaranteed since actual path length cannot be shorter than
+    # distance to any single remaining target.
     foodList = foodGrid.asList()
     if not foodList:
         return 0
