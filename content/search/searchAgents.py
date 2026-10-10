@@ -473,8 +473,11 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    # Every remaining dot costs at least one move to eat.
-    return foodGrid.count()
+    # Pacman must at least reach the farthest remaining dot.
+    foodList = foodGrid.asList()
+    if not foodList:
+        return 0
+    return max(util.manhattanDistance(position, food) for food in foodList)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
